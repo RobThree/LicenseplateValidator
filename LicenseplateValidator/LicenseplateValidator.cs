@@ -11,7 +11,7 @@ namespace LicenseplateValidator
     public class LicenseplateValidator
     {
         // Supported countries and their sidecodes
-        private readonly Dictionary<string, string[]> _supportedSideCodes;
+        private readonly IDictionary<string, string[]> _supportedSideCodes;
 
         /// <summary>
         /// Initializes a <see cref="LicenseplateValidator"/> with support for only Dutch sidecodes.
@@ -26,7 +26,7 @@ namespace LicenseplateValidator
         /// Initializes a <see cref="LicenseplateValidator"/> with support for the specified countries and their sidecodes.
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown when supportedSideCodes is <see langword="null"/>.</exception>
-        public LicenseplateValidator(Dictionary<string, string[]> supportedSideCodes)
+        public LicenseplateValidator(IDictionary<string, string[]> supportedSideCodes)
         {
             _supportedSideCodes = supportedSideCodes ?? throw new ArgumentNullException(nameof(supportedSideCodes));
         }
@@ -227,6 +227,8 @@ namespace LicenseplateValidator
         {
             switch (sidecodeChar)    // Get char from sidecode
             {
+                case '?':   // Char from plate should be a letter OR digit
+                    return char.IsLetter(plateChar) || char.IsDigit(plateChar);
                 case 'X':   // Char from plate should be a letter
                     return char.IsLetter(plateChar);
                 case '9':   // Char from plate should be a digit

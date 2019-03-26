@@ -84,17 +84,25 @@ namespace LicenseplateValidator.Tests
             var target = new LicenseplateValidator(new Dictionary<string, string[]>
             {
                 { "XX", new[] { "XX-99-XX", "X9-9X-X9" } },
-                { "YY", new[] { "99-XX-99", "XXX-999" } }
+                { "YY", new[] { "99-XX-99", "XXX-999" } },
+                { "ZZ", new[] { "X?-X?-X?" } },
             });
             Assert.IsTrue(target.IsValidPlate("AB-12-CD", "XX"));
             Assert.IsTrue(target.IsValidPlate("A1-2B-C3", "XX"));
             Assert.IsTrue(target.IsValidPlate("12-AB-34", "YY"));
             Assert.IsTrue(target.IsValidPlate("ABC-123", "YY"));
 
+            Assert.IsTrue(target.IsValidPlate("A1-B2-C3", "ZZ"));
+            Assert.IsTrue(target.IsValidPlate("AB-CD-E1", "ZZ"));
+
             Assert.IsFalse(target.IsValidPlate("AB-12-CD", "YY"));
             Assert.IsFalse(target.IsValidPlate("A1-2B-C3", "YY"));
             Assert.IsFalse(target.IsValidPlate("12-AB-34", "XX"));
             Assert.IsFalse(target.IsValidPlate("ABC-123", "XX"));
+
+            Assert.IsFalse(target.IsValidPlate("A1B-2C3", "ZZ"));
+            Assert.IsFalse(target.IsValidPlate("12-BC-D3", "ZZ"));
+
         }
 
 
@@ -274,7 +282,7 @@ namespace LicenseplateValidator.Tests
         {
             var target = new LicenseplateValidator(new Dictionary<string, string[]>
             {
-                { "XX", new[] { "XX-99-XY" } }
+                { "XX", new[] { "XX-99-X*" } }
             });
             target.IsValidPlate("AB-12-CD", "XX");
         }
