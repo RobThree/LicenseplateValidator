@@ -27,6 +27,8 @@ namespace LicenseplateValidator.Tests
             Assert.AreEqual("AB-12-34", target.FormatPlate("AB 12 34", "NL"));
             Assert.AreEqual("12-34-AB", target.FormatPlate("1-2-3-4 AB", "NL"));
 
+            Assert.AreEqual("AB-12-34", target.FormatPlate("AB-12-34", "NL", false));
+            Assert.AreEqual("12-34-AB", target.FormatPlate("12-34-AB", "NL", false));
         }
 
         [TestMethod]
@@ -127,6 +129,14 @@ namespace LicenseplateValidator.Tests
             target.TryFormatPlate("AB-12-CD", "XX", out var _);
         }
 
+        [TestMethod]
+        public void FindSideCode_Ignores_IncorrectDashes()
+        {
+            var target = new LicenseplateValidator();
+            target.FindSideCode("1234AB", "NL", true);
+            target.FindSideCode("1-23-4AB", "NL", true);
+        }
+
 
         [TestMethod]
         public void FindSideCode_Returns_MatchingSideCode()
@@ -148,6 +158,23 @@ namespace LicenseplateValidator.Tests
         {
             var target = new LicenseplateValidator();
             target.FormatPlate("1234AB", "XX");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KeyNotFoundException))]
+        public void FormatPlate_Throws_OnIncorrectDashes()
+        {
+            var target = new LicenseplateValidator();
+            target.FormatPlate("1234AB", "NL", false);
+        }
+
+
+        [TestMethod]
+        public void FormatPlate_Ignores_IncorrectDashes()
+        {
+            var target = new LicenseplateValidator();
+            target.FormatPlate("1234AB", "NL", true);
+            target.FormatPlate("1-23-4AB", "NL", true);
         }
 
         [TestMethod]
@@ -206,6 +233,14 @@ namespace LicenseplateValidator.Tests
         {
             var target = new LicenseplateValidator();
             target.FindSideCode("   ", "NL");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KeyNotFoundException))]
+        public void FindSideCode_Throws_OnIncorrectDashes()
+        {
+            var target = new LicenseplateValidator();
+            target.FindSideCode("1234AB", "NL", false);
         }
 
         [TestMethod]
