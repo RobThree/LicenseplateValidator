@@ -35,3 +35,7 @@ var lpv = new LicenseplateValidator(new Dictionary<string, string[]>(StringCompa
 });
 ````
 The above initializes a new `LicenseplateValidator` with two fictional countries ("XX" and "YY) with the sidecodes for each country. Note that because we use an overload of the dictionary that makes the key comparer case-insensitive you can pass `"XX"`, `"Xx"`, `"xX"` or `"xx"` as countrycode to all methods and this will work fine. If you don't want this behaviour then simply use the parameterless dictionary constructor or pass any other `IDictionary<string, string[]>` that implements the required key comparison. Also note that you don't *HAVE* to stick with country codes like "NL", "XX" etc. You can use whatever key you like.
+
+## About actual validation
+
+This project / library was born out of a little brainteaser that got a little out of hand. However; that doesn't mean in any way that this library is 100% correct. In fact, it doesn't even make any _attempt_ to be correct. For example, ANY letter will be allowed where some sidecodes don't allow certain letters (like [the letter `C`](https://nl.wikipedia.org/wiki/Nederlands_kenteken#Sidecode_1) which isn't valid in Sidecode 1). Also some letters/digits are only allowed in certain places. All these minor details have _not_ been added to this library. This is a quick'n'dirty fun little project that works fine for most purposes. If you want all the nitty gritty details supported or implemented then I suggest you look elsewhere (or make a pull request 😉).
