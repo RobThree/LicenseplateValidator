@@ -4,7 +4,7 @@ Fun little brain teaser turned into a small library
 ## Main methods:
 
 ````c#
-var lpv = new LicensePlateValidator(); // By default only knows about dutch license plate formats ("sidecodes")
+var lpv = new LicensePlateValidator(); // By default only knows about dutch license plate formats ("[sidecodes](https://nl.wikipedia.org/wiki/Nederlands_kenteken#Sidecodes)")
 
 lpv.IsValidPlate("AB-12-CD", "NL");  // Returns true
 lpv.FormatPlate("AB12CD", "NL");     // Returns "AB-12-CD"
@@ -34,7 +34,7 @@ var lpv = new LicenseplateValidator(new Dictionary<string, string[]>(StringCompa
     { "YY", new[] { "99-XX-99", "XXX-999" } }
 });
 ````
-The above initializes a new `LicenseplateValidator` with two fictional countries ("XX" and "YY) with the sidecodes for each country. Note that because we use an overload of the dictionary that makes the key comparer case-insensitive you can pass `"XX"`, `"Xx"`, `"xX"` or `"xx"` as countrycode to all methods and this will work fine. If you don't want this behaviour then simply use the parameterless dictionary constructor or pass any other `IDictionary<string, string[]>` that implements the required key comparison. Also note that you don't *HAVE* to stick with country codes like "NL", "XX" etc. You can use whatever key you like.
+The above initializes a new `LicenseplateValidator` with two fictional countries (`"XX"` and `"YY"`) with the sidecodes for each country. Note that because we use an overload of the dictionary that makes the key comparer case-insensitive you can pass `"XX"`, `"Xx"`, `"xX"` or `"xx"` as countrycode to all methods and this will work fine. If you don't want this behaviour then simply use the parameterless dictionary constructor or pass any other `IDictionary<string, string[]>` that implements the required key comparison. Also note that you don't *HAVE* to stick with country codes like "NL", "XX" etc. You can use whatever key you like.
 
 ## About actual validation
 
