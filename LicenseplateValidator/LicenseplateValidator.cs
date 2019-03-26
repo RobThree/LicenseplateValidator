@@ -25,6 +25,7 @@ namespace LicenseplateValidator
         /// <summary>
         /// Initializes a <see cref="LicenseplateValidator"/> with support for the specified countries and their sidecodes.
         /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown when supportedSideCodes is <see langword="null"/>.</exception>
         public LicenseplateValidator(Dictionary<string, string[]> supportedSideCodes)
         {
             _supportedSideCodes = supportedSideCodes ?? throw new ArgumentNullException(nameof(supportedSideCodes));
@@ -36,12 +37,13 @@ namespace LicenseplateValidator
         /// <param name="plate">The plate to format.</param>
         /// <param name="countryContext">The country specifying which country to format the plate for.</param>
         /// <returns>The formatted plate.</returns>
-        /// <exception cref="NotSupportedException">Thrown when no valid sidecode could be found for the given plate</exception>
+        /// <exception cref="ArgumentNullException">Thrown when a <paramref name="plate"/> is <see langword="null"/> or empty.</exception>
+        /// <exception cref="KeyNotFoundException">Thrown when <paramref name="countryContext"/> contains an unsupported country or no sidecode for the given <paramref name="plate"/> could be found.</exception>
         public string FormatPlate(string plate, string countryContext)
         {
             if (TryFormatPlate(plate, countryContext, out var result))
                 return result;
-            throw new NotSupportedException("No supported sidecode found for given plate and country");
+            throw new KeyNotFoundException("No supported sidecode found for given plate and country");
         }
 
         /// <summary>
@@ -53,7 +55,7 @@ namespace LicenseplateValidator
         /// <returns>
         /// Returns <see langword="true"/> when the plate could be formatted and <paramref name="result"/> will contain the formatted plate, <see langword="false"/> otherwise.
         /// </returns>
-        /// <exception cref="ArgumentNullException">Thrown when a <paramref name="plate"/> is empty.</exception>
+        /// <exception cref="ArgumentNullException">Thrown when a <paramref name="plate"/> is <see langword="null"/> or empty.</exception>
         /// <exception cref="KeyNotFoundException">Thrown when <paramref name="countryContext"/> contains an unsupported country.</exception>
         public bool TryFormatPlate(string plate, string countryContext, out string result)
         {
@@ -82,9 +84,13 @@ namespace LicenseplateValidator
         /// <param name="plate">The plate to check.</param>
         /// <param name="countryContext">The country specifying which country to validate the plate for.</param>
         /// <returns>Returns true when the plate is valid, false otherwise.</returns>
-        public bool IsValidPlate(string plate, string countryContext)
+        /// <exception cref="ArgumentNullException">Thrown when a <paramref name="plate"/> is <see langword="null"/> or empty.</exception>
+        /// <exception cref="KeyNotFoundException">Thrown when <paramref name="countryContext"/> contains an unsupported country.</exception>
+        public bool IsValidPlate(string plate, string countryContext, bool ignoreDashes = false)
         {
-            return TryFindSideCode(plate, countryContext, out var _);
+            return ignoreDashes
+                ? TryFormatPlate(plate, countryContext, out var _)
+                : TryFindSideCode(plate, countryContext, out var _);
         }
 
         /// <summary>
@@ -93,7 +99,8 @@ namespace LicenseplateValidator
         /// <param name="plate">The plate to find a matching sidecode for.</param>
         /// <param name="countryContext">The country specifying which country to validate the plate for.</param>
         /// <returns>Returns the sidecode for the given plate.</returns>
-        /// <exception cref=""></exception>
+        /// <exception cref="ArgumentNullException">Thrown when a <paramref name="plate"/> is <see langword="null"/> or empty.</exception>
+        /// <exception cref="KeyNotFoundException">Thrown when <paramref name="countryContext"/> contains an unsupported country or no sidecode for the given <paramref name="plate"/> could be found.</exception>
         public string FindSideCode(string plate, string countryContext)
         {
             if (TryFindSideCode(plate, countryContext, out var result))
@@ -108,6 +115,8 @@ namespace LicenseplateValidator
         /// <param name="countryContext">The country specifying which country to validate the plate for.</param>
         /// <param name="sideCode">The sidecode matched with the plate (if any); undefined otherwise.</param>
         /// <returns>Returns true when the plate matched a known sidecode, false otherwise. The out argument is the sidecode that matched the plate.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when a <paramref name="plate"/> is <see langword="null"/> or empty.</exception>
+        /// <exception cref="KeyNotFoundException">Thrown when <paramref name="countryContext"/> contains an unsupported country.</exception>
         public bool TryFindSideCode(string plate, string countryContext, out string sideCode)
         {
             plate = NormalizeString(plate);
@@ -209,5 +218,4 @@ namespace LicenseplateValidator
             return value?.Replace("-", string.Empty);
         }
     }
-
 }
