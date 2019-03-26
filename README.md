@@ -30,7 +30,7 @@ The `LicensePlateValidator` supports other countries. All you need to do is pass
 ````c#
 var lpv = new LicenseplateValidator(new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase)
 {
-    { "XX", new[] { "XX-99-XX", "X9-9X-X9" } },
+    { "XX", new[] { "XX-99-XX", "X9-9X-X9", "99-X-99X" } },
     { "YY", new[] { "99-XX-99", "XXX-999" } }
 });
 ````
