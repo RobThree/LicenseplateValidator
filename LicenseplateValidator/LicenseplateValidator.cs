@@ -83,6 +83,7 @@ namespace LicenseplateValidator
         /// </summary>
         /// <param name="plate">The plate to check.</param>
         /// <param name="countryContext">The country specifying which country to validate the plate for.</param>
+        /// <param name="ignoreDashes">When <see langword="true"/>, dashes in the plate will be ignored. When <see langword="false"/> dashes should be in the correct place in the plate.</param>
         /// <returns>Returns true when the plate is valid, false otherwise.</returns>
         /// <exception cref="ArgumentNullException">Thrown when a <paramref name="plate"/> is <see langword="null"/> or empty.</exception>
         /// <exception cref="KeyNotFoundException">Thrown when <paramref name="countryContext"/> contains an unsupported country.</exception>
