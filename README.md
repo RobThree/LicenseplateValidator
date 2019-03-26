@@ -4,7 +4,7 @@ Fun little brain teaser turned into a small library
 ## Main methods:
 
 ````c#
-var lpv = new LicensePlateValidator(); // By default only knows about dutch license plate formats ("[sidecodes](https://nl.wikipedia.org/wiki/Nederlands_kenteken#Sidecodes)")
+var lpv = new LicensePlateValidator(); // By default only knows about dutch license plate formats ("sidecodes")
 
 lpv.IsValidPlate("AB-12-CD", "NL");  // Returns true
 lpv.FormatPlate("AB12CD", "NL");     // Returns "AB-12-CD"
@@ -23,7 +23,7 @@ target.IsValidPlate("AB-12-CD", "NL", ignoreDashes: true);   // Returns true
 
 Most methods will throw on errors; there are `Try...` methods that will not throw on common errors (unless documented).
 
-## Other countries / sidecodes:
+## Other countries / [sidecodes](https://nl.wikipedia.org/wiki/Nederlands_kenteken#Sidecodes):
 
 The `LicensePlateValidator` supports other countries. All you need to do is pass in the allowed sidecodes. These are codes like `XX-99-XX` which describe where digits (`9`), letters (`X`), digit _or_ letter (`?`) and dashes (`-`) should go in a plate. You can specify these, along with the country codes, in the constructor:
 
