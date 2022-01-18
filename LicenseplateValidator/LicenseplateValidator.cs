@@ -11,14 +11,14 @@ namespace LicenseplateValidator
     public class LicenseplateValidator
     {
         // Supported countries and their sidecodes
-        private readonly IDictionary<string, string[]> _supportedSideCodes;
+        private readonly IDictionary<string, string[]> _supportedsidecodes;
 
         /// <summary>
         /// Initializes a <see cref="LicenseplateValidator"/> with support for only Dutch sidecodes.
         /// </summary>
         public LicenseplateValidator()
             : this(new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase) {
-                { "NL", new[] { "XX-99-99", "99-99-XX", "99-XX-99", "XX-99-XX", "XX-XX-99", "99-XX-XX", "99-XXX-9", "9-XXX-99", "XX-999-X", "X-999-XX", "XXX-99-X" }
+                { "NL", new[] { "XX-99-99", "99-99-XX", "99-XX-99", "XX-99-XX", "XX-XX-99", "99-XX-XX", "99-XXX-9", "9-XXX-99", "XX-999-X", "X-999-XX", "X-999-XX", "XXX-99-X", "XXX-99-X", "X-99-XXX", "9-XX-999", "999-XX-9" }
             } })
         { }
 
@@ -27,9 +27,7 @@ namespace LicenseplateValidator
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown when supportedSideCodes is <see langword="null"/>.</exception>
         public LicenseplateValidator(IDictionary<string, string[]> supportedSideCodes)
-        {
-            _supportedSideCodes = supportedSideCodes ?? throw new ArgumentNullException(nameof(supportedSideCodes));
-        }
+            => _supportedsidecodes = supportedSideCodes ?? throw new ArgumentNullException(nameof(supportedSideCodes));
 
         /// <summary>
         /// Formate a plate for a given country.
@@ -43,7 +41,10 @@ namespace LicenseplateValidator
         public string FormatPlate(string plate, string countryContext, bool ignoreDashes = true)
         {
             if (TryFormatPlate(plate, countryContext, ignoreDashes, out var result))
+            {
                 return result;
+            }
+
             throw new KeyNotFoundException("No supported sidecode found for given plate and country");
         }
 
@@ -59,9 +60,7 @@ namespace LicenseplateValidator
         /// <exception cref="ArgumentNullException">Thrown when a <paramref name="plate"/> is <see langword="null"/> or empty.</exception>
         /// <exception cref="KeyNotFoundException">Thrown when <paramref name="countryContext"/> contains an unsupported country.</exception>
         public bool TryFormatPlate(string plate, string countryContext, out string result)
-        {
-            return TryFormatPlate(plate, countryContext, true, out result);
-        }
+            => TryFormatPlate(plate, countryContext, true, out result);
 
         /// <summary>
         /// Tries to format a plate for a given country context.
@@ -85,7 +84,10 @@ namespace LicenseplateValidator
                 // Then copy all characters in the desired format (advance plate pointer for every char unless a dash)
                 var i = 0;
                 foreach (var c in sidecode)
+                {
                     result += (c == '-') ? '-' : plate[i++];
+                }
+
                 return true;    // Done, success!
             }
             return false;   // No matching sidecode found!
@@ -100,12 +102,9 @@ namespace LicenseplateValidator
         /// <returns>Returns true when the plate is valid, false otherwise.</returns>
         /// <exception cref="ArgumentNullException">Thrown when a <paramref name="plate"/> is <see langword="null"/> or empty.</exception>
         /// <exception cref="KeyNotFoundException">Thrown when <paramref name="countryContext"/> contains an unsupported country.</exception>
-        public bool IsValidPlate(string plate, string countryContext, bool ignoreDashes = false)
-        {
-            return ignoreDashes
+        public bool IsValidPlate(string plate, string countryContext, bool ignoreDashes = false) => ignoreDashes
                 ? TryFormatPlate(plate, countryContext, out var _)
                 : TryFindSideCode(plate, countryContext, ignoreDashes, out var _);
-        }
 
         /// <summary>
         /// Finds the sidecode matching the given plate.
@@ -119,7 +118,10 @@ namespace LicenseplateValidator
         public string FindSideCode(string plate, string countryContext, bool ignoreDashes = false)
         {
             if (TryFindSideCode(plate, countryContext, ignoreDashes, out var result))
+            {
                 return result;
+            }
+
             throw new KeyNotFoundException("Unable to find sidecode for given plate."); //TODO: should be a custom exception (i.e. "SideCodeNotFoundException")
         }
 
@@ -133,9 +135,7 @@ namespace LicenseplateValidator
         /// <exception cref="ArgumentNullException">Thrown when a <paramref name="plate"/> is <see langword="null"/> or empty.</exception>
         /// <exception cref="KeyNotFoundException">Thrown when <paramref name="countryContext"/> contains an unsupported country.</exception>
         public bool TryFindSideCode(string plate, string countryContext, out string sideCode)
-        {
-            return TryFindSideCode(plate, countryContext, false, out sideCode);
-        }
+            => TryFindSideCode(plate, countryContext, false, out sideCode);
 
         /// <summary>
         /// Tries to find the sidecode matching the given plate.
@@ -151,8 +151,9 @@ namespace LicenseplateValidator
         {
             plate = RemoveDashes(NormalizeString(plate), ignoreDashes);
             if (string.IsNullOrEmpty(plate))
+            {
                 throw new ArgumentNullException(nameof(plate));
-
+            }
 
             sideCode = null;
             foreach (var s in GetCountrySideCodes(countryContext))   // Try all sidecodes
@@ -173,9 +174,7 @@ namespace LicenseplateValidator
         /// <returns>Returns an array of valid sidecodes for a country</returns>
         /// <exception cref="KeyNotFoundException">Thrown when an unsupported country was specified.</exception>
         private string[] GetCountrySideCodes(string country)
-        {
-            return _supportedSideCodes.TryGetValue(country, out var v) ? v : throw new KeyNotFoundException($"Unsupported country {country}");
-        }
+            => _supportedsidecodes.TryGetValue(country, out var v) ? v : throw new KeyNotFoundException($"Unsupported country {country}");
 
         /// <summary>
         /// Cleans a string from all whitespace and ensures all unicode characters have been normalized to FormC.
@@ -185,7 +184,9 @@ namespace LicenseplateValidator
         private static string NormalizeString(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
+            {
                 return null;
+            }
 
             // Normalize to FormC and remove all whitespace from the string
             return string.Join(string.Empty, value.Normalize(NormalizationForm.FormC)
@@ -201,11 +202,13 @@ namespace LicenseplateValidator
         /// <returns></returns>
         /// <remarks>This method returns true when the <paramref name="plate"/> matches the <paramref name="sideCode"/>.</remarks>
         /// <exception cref="NotSupportedException">Thrown when sidecode definition contains invalid characters</exception>
-        private bool MatchCode(string plate, string sideCode)
+        private static bool MatchCode(string plate, string sideCode)
         {
             // Difference in length? No match. Done.
             if (plate.Length != sideCode.Length)
+            {
                 return false;
+            }
 
             // Assume plate matches; then check each position and update the macth variable accordingly.
             var match = true;
@@ -223,22 +226,20 @@ namespace LicenseplateValidator
         /// <param name="sidecodeChar">The sidecode char to match against.</param>
         /// <param name="plateChar">The plate char to match.</param>
         /// <returns>Returns true when the plate char matches, false otherwise.</returns>
-        private bool IsSideCodeMatch(char sidecodeChar, char plateChar)
-        {
-            switch (sidecodeChar)    // Get char from sidecode
+        private static bool IsSideCodeMatch(char sidecodeChar, char plateChar)
+            => sidecodeChar switch    // Get char from sidecode
             {
-                case '?':   // Char from plate should be a letter OR digit
-                    return char.IsLetter(plateChar) || char.IsDigit(plateChar);
-                case 'X':   // Char from plate should be a letter
-                    return char.IsLetter(plateChar);
-                case '9':   // Char from plate should be a digit
-                    return char.IsDigit(plateChar);
-                case '-':   // Char from plate should be a dash
-                    return plateChar == '-';
-                default:    // Not supported
-                    throw new NotSupportedException($"Invalid sidecode definition; cannot contain {sidecodeChar}");
-            }
-        }
+                // Char from plate should be a letter OR digit
+                '?' => char.IsLetter(plateChar) || char.IsDigit(plateChar),
+                // Char from plate should be a letter
+                'X' => char.IsLetter(plateChar),
+                // Char from plate should be a digit
+                '9' => char.IsDigit(plateChar),
+                // Char from plate should be a dash
+                '-' => plateChar == '-',
+                // Not supported
+                _ => throw new NotSupportedException($"Invalid sidecode definition; cannot contain {sidecodeChar}"),
+            };
 
         /// <summary>
         /// Removes dashes from a given string.
@@ -246,8 +247,6 @@ namespace LicenseplateValidator
         /// <param name="value">The value to remove dashes from.</param>
         /// <returns>The string without any dashes.</returns>
         private static string RemoveDashes(string value, bool remove)
-        {
-            return remove ? value?.Replace("-", string.Empty) : value;
-        }
+            => remove ? value?.Replace("-", string.Empty) : value;
     }
 }
