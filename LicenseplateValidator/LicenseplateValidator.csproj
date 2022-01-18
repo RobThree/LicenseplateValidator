@@ -15,6 +15,7 @@
 		<PackageProjectUrl>https://github.com/RobThree/LicenseplateValidator</PackageProjectUrl>
 		<Description>Fun little brain teaser turned into a small library</Description>
 		<Company>Devcorner.nl</Company>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	</PropertyGroup>
 
 	<ItemGroup>
