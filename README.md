@@ -1,4 +1,4 @@
-# LicenseplateValidator
+# <img src="https://github.com/RobThree/LicenseplateValidator/blob/master/LicenseplateValidator/logo.png?raw=true" width="48" height="48"> LicenseplateValidator
 Fun little brain teaser turned into a small library
 
 ## Main methods:
